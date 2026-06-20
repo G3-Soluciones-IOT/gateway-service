@@ -1,3 +1,8 @@
-# Forzar salto de linea de Linux (LF) para que no falle el CI
-.mvn/wrapper/maven-wrapper.properties text eol=lf
+* text=auto
+
+.gitattributes text eol=lf
+.github/workflows/*.yml text eol=lf
+
+# Maven wrapper files must stay shell-safe on Linux runners.
 mvnw text eol=lf
+.mvn/wrapper/maven-wrapper.properties text eol=lf
