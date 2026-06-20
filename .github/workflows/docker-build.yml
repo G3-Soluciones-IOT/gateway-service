@@ -1,0 +1,22 @@
+name: Docker Build
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+  push:
+    branches:
+      - main
+      - develop
+
+jobs:
+  docker-build:
+    name: Docker Build
+    uses: G3-Soluciones-IOT/shared-workflows/.github/workflows/docker-build.yml@v1
+    with:
+      service-name: "gateway-service"
+      java-version: "25"
+      working-directory: "."
+      dockerfile-path: "Dockerfile"
+      image-tag: "local"
