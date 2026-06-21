@@ -1,0 +1,24 @@
+name: CD - Build and Push to GCP Artifact Registry
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  build-and-push:
+    uses: G3-Soluciones-IOT/shared-workflows/.github/workflows/gcp-artifact-registry-push.yml@main
+    with:
+      service_name: gateway-service
+      gcp_project_id: jameofit
+      gcp_region: southamerica-west1
+      gar_repository: jameofit-docker
+      workload_identity_provider: projects/809847807436/locations/global/workloadIdentityPools/github-pool/providers/github-provider
+      service_account: gha-artifact-writer@jameofit.iam.gserviceaccount.com
+      dockerfile_path: Dockerfile
+      build_context: .
+      push_latest: false

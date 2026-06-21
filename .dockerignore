@@ -1,0 +1,12 @@
+.git/
+.github/
+.idea/
+.vscode/
+target/
+logs/
+*.log
+.env
+.env.*
+.DS_Store
+Thumbs.db
+Desktop.ini
