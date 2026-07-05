@@ -20,6 +20,12 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .authorizeExchange(exchange -> exchange
                         .pathMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .pathMatchers(HttpMethod.POST,
+                                "/api/v1/iot/hydration",
+                                "/api/v1/iot/weight",
+                                "/iot-service/api/v1/iot/hydration",
+                                "/iot-service/api/v1/iot/weight"
+                        ).permitAll()
                         .pathMatchers(
                                 "/api/v1/authentication/**",
                                 "/api/v1/jwks/**",

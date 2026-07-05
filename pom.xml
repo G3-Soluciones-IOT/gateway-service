@@ -149,9 +149,11 @@
                         <spring.cloud.service-registry.auto-registration.enabled>false</spring.cloud.service-registry.auto-registration.enabled>
 
                         <!-- Required by pe.edu.upc.gateway_service.security.JwtConfig during context load -->
-                        <spring.security.oauth2.resource-server.jwt.jwk-set-uri>
-                            https://auth0.test/.well-known/jwks.json
-                        </spring.security.oauth2.resource-server.jwt.jwk-set-uri>
+                        <spring.security.oauth2.resource-server.jwt.issuer-uri>https://auth0.test/</spring.security.oauth2.resource-server.jwt.issuer-uri>
+                        <auth0.audience>jameofit-api-test</auth0.audience>
+                        <legacy.jwt.enabled>true</legacy.jwt.enabled>
+                        <legacy.jwt.issuer>iam-service</legacy.jwt.issuer>
+                        <legacy.jwt.jwk-set-uri>https://auth0.test/.well-known/jwks.json</legacy.jwt.jwk-set-uri>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
