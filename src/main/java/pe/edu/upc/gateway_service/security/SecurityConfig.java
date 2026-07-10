@@ -24,7 +24,9 @@ public class SecurityConfig {
                                 "/api/v1/iot/hydration",
                                 "/api/v1/iot/weight",
                                 "/iot-service/api/v1/iot/hydration",
-                                "/iot-service/api/v1/iot/weight"
+                                "/iot-service/api/v1/iot/weight",
+                                "/api/v1/stripe-webhooks",
+                                "/payments-service/api/v1/stripe-webhooks"
                         ).permitAll()
                         .pathMatchers(
                                 "/api/v1/authentication/**",
