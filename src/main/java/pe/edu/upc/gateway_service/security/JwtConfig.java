@@ -9,11 +9,12 @@ import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.core.OAuth2TokenValidatorResult;
 import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
+import org.springframework.security.oauth2.jwt.BadJwtException;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.security.oauth2.jwt.JwtValidators;
 import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusReactiveJwtDecoder;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -47,10 +48,30 @@ public class JwtConfig {
             @Qualifier("auth0JwtDecoder") ReactiveJwtDecoder auth0JwtDecoder,
             @Qualifier("legacyJwtDecoder") ReactiveJwtDecoder legacyJwtDecoder,
             @Value("${legacy.jwt.enabled:true}") boolean legacyJwtEnabled) {
-        return token -> auth0JwtDecoder.decode(token)
-                .onErrorResume(error -> legacyJwtEnabled
-                        ? legacyJwtDecoder.decode(token)
-                        : Mono.error(error));
+        return token -> {
+            if (!legacyJwtEnabled) {
+                return auth0JwtDecoder.decode(token)
+                        .onErrorMap(error -> jwtFailure(null, error));
+            }
+            return legacyJwtDecoder.decode(token)
+                    .onErrorResume(legacyFailure -> auth0JwtDecoder.decode(token)
+                            .onErrorMap(auth0Failure -> jwtFailure(legacyFailure, auth0Failure)));
+        };
+    }
+
+    private static RuntimeException jwtFailure(Throwable legacyFailure, Throwable auth0Failure) {
+        if (legacyFailure instanceof JwtException jwtException) {
+            return jwtException;
+        }
+        if (auth0Failure instanceof JwtException jwtException) {
+            return jwtException;
+        }
+        var failure = new BadJwtException("Failed to decode JWT with IAM JWKS and Auth0");
+        if (legacyFailure != null) {
+            failure.addSuppressed(legacyFailure);
+        }
+        failure.addSuppressed(auth0Failure);
+        return failure;
     }
 
     private static final class AudienceValidator implements OAuth2TokenValidator<Jwt> {
