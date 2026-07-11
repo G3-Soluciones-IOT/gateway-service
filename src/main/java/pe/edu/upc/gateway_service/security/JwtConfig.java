@@ -97,4 +97,5 @@ public class JwtConfig {
                     : OAuth2TokenValidatorResult.failure(error);
         }
     }
+
 }
